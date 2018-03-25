@@ -1,0 +1,155 @@
+/******************************************************************************
+                             INITIAL ADJUSTMENTS
+*******************************************************************************/
+
+
+html {
+    box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: url('../img/ep_naturalwhite.png'); /* Background pattern
+                                                      from Subtle Patterns */
+    font-family: 'Coda', cursive;
+    color: #6D1421;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+h1 {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 600;
+    color: #34146D;
+}
+
+
+/******************************************************************************
+                             GAME ON SCREEN
+*******************************************************************************/
+
+
+/* STYLES FOR THE SCORE PANEL */
+
+.score-panel {
+    text-align: left;
+    width: 345px;
+    margin-bottom: 10px;
+}
+
+.score-panel .stars {
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+    margin: 0 5px 0 0;
+}
+
+.score-panel .stars li {
+    list-style: none;
+    display: inline-block;
+}
+
+.score-panel .restart {
+    float: right;
+    cursor: pointer;
+}
+
+
+/* STYLES FOR THE DECK OF CARDS  */
+
+.deck {
+    width: 660px;
+    min-height: 680px;
+    background: linear-gradient(120deg, #6D1421, #34146D);
+    padding: 32px;
+    border-radius: 50%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 0 3em;
+}
+
+.deck .card {
+    height: 125px;
+    width: 125px;
+    background: linear-gradient(30deg, #AF868B, #F3E879);
+    font-size: 0;
+    color: #000;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.deck .card.open {
+    background: #F1EEE7;
+    cursor: default;
+    animation-name: makeitsmall;
+    animation-duration: 0.1s;
+}
+
+@keyframes makeitsmall {
+  from {
+    transform: scale(0.8);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.deck .card.show {
+    font-size: 33px;
+}
+
+.deck .card.match {
+    cursor: default;
+    background: #55233B;
+    font-size: 33px;
+    color: #fff;
+    border: 1px solid black;
+    animation: bounce 0.3s;
+}
+
+@keyframes bounce {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+
+/******************************************************************************
+                             GAME OVER SCREEN
+*******************************************************************************/
+
+
+.gameover {
+  display: none;
+  text-align: center;
+  padding-top: 20vh;
+}

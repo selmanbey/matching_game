@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Matching Game</title>
+    <meta name="description" content="">
+    <link rel="stylesheet prefetch" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+    <link rel="stylesheet prefetch" href="https://fonts.googleapis.com/css?family=Coda|Raleway">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+    <div class="container gameon">
+        <header>
+            <h1>MATCHING GAME</h1>
+        </header>
+
+        <section class="score-panel">
+        	<ul class="stars">
+            <li><i class="fa fa-star"></i></li>
+            <li><i class="fa fa-star"></i></li>
+        		<li><i class="fa fa-star"></i></li>
+        		<li><i class="fa fa-star"></i></li>
+        		<li><i class="fa fa-star"></i></li>
+        	</ul>
+
+        	<span class="guesses">0</span> Guesses
+
+          <div class="restart">
+        		<i class="fa fa-repeat"></i>
+        	</div>
+        </section>
+
+        <ul class="deck"></ul>
+    </div>
+
+    <div class="container gameover">
+        <header>
+          <h1>CONGRATULATIONS!</h1>
+        </header>
+        <section class="result-panel">
+          <p>It took you <span class="guess-result"></span> guesses to win.</p>
+          <p>Which means you got <span class="star-result"></span>!</p>
+          <p>Do you want to play again, maybe?</p>
+          <i class="fa fa-repeat replay"></i>
+        </section>
+    </div>
+
+    <script src="js/app.js"></script>
+
+</body>
+</html>
