@@ -272,10 +272,3 @@ replayButton.addEventListener("click", function() {
   gameOnDiv.style.display = "flex";
   restartTheGame(deckUl);
 });
-
-
-/******************************************************************************
-                            INITIAL SETTING
-*******************************************************************************/
-
-// createDeck(cards, deckUl);
