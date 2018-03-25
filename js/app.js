@@ -38,18 +38,7 @@ let screenTimer; // to display a timer in screen
 *******************************************************************************/
 
 
-// Shuffle function from http://stackoverflow.com/a/2450976
-function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
-    while (currentIndex !== 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
-    return array;
-}
+/******************* SCORE-PANEL RELATED FUNCTIONS ****************************/
 
 function setStartTime() {
   gameStartTime = Date.now()
@@ -61,14 +50,21 @@ function stopStartTime() {
   return gameFinishTime
 }
 
-function startTheGame(startButton) {
-  startButton.style.display = "none";
-  createDeck(cards, deckUl);
-  gameStartTime = setStartTime()
-  screenTimer = setInterval(function(){
-    displayTime(gameStartTime)
-  }, 1000);
-};
+function calculateGameTime() {
+  let totalGameTime = gameFinishTime - gameStartTime;
+  let minutes = Math.floor(totalGameTime / 60000);
+  let seconds = Math.floor((totalGameTime % 60000) / 1000);
+  return `${(minutes < 10) ? ("0" + minutes) : minutes}:${(seconds < 10) ? ("0" + seconds) : seconds}`
+}
+
+function displayTime(gameStartTime) {
+  let now = Date.now();
+  let passedTime = now - gameStartTime;
+  let minutes = Math.floor(passedTime / 60000);
+  let seconds = Math.floor((passedTime % 60000) / 1000);
+  passedTime = `${(minutes < 10) ? ("0" + minutes) : minutes}:${(seconds < 10) ? ("0" + seconds) : seconds}`;
+  timeCounter.textContent = passedTime;
+}
 
 function restartTheStarRating(starsUl) {
   starsUl.innerHTML = ""
@@ -78,22 +74,39 @@ function restartTheStarRating(starsUl) {
   }
 };
 
-function restartTheGame(deckUl) {
-  // clears the old deck
-  while(deckUl.firstChild) {
-    deckUl.removeChild(deckUl.firstChild);
-  };
-  // creates a new deck and refreshes the game variables
-  createDeck(cards, deckUl);
-  correctlyGuessedCards = 0;
-  clickCount = 0;
-  totalGuesses = 0;
-  guessCounter.textContent = totalGuesses;
-  card1 = null;
-  card2 = null;
-  TimeoutID;
-  restartTheStarRating(starsUl);
-  gameStartTime = setStartTime();
+function updateStars(totalGuesses, starsUl) {
+  switch(totalGuesses) {
+    case 15:
+      starsUl.removeChild(starsUl.firstElementChild)
+      break;
+    case 19:
+      starsUl.removeChild(starsUl.firstElementChild)
+      break;
+    case 26:
+      starsUl.removeChild(starsUl.firstElementChild)
+      break;
+    case 30:
+      starsUl.removeChild(starsUl.firstElementChild)
+      break;
+    case 35:
+      starsUl.removeChild(starsUl.firstElementChild)
+      break;
+  }
+}
+
+/************************* DECK RELATED FUNCTIONS ****************************/
+
+// Shuffle function from http://stackoverflow.com/a/2450976
+function shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+    while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+    return array;
 }
 
 function createACard(classname) {
@@ -116,6 +129,33 @@ function createDeck(cards, deckUl) {
     deck.appendChild(li);
   };
   deckUl.appendChild(deck);
+}
+
+function startTheGame(startButton) {
+  startButton.style.display = "none";
+  createDeck(cards, deckUl);
+  gameStartTime = setStartTime()
+  screenTimer = setInterval(function(){
+    displayTime(gameStartTime)
+  }, 1000);
+};
+
+function restartTheGame(deckUl) {
+  // clears the old deck
+  while(deckUl.firstChild) {
+    deckUl.removeChild(deckUl.firstChild);
+  };
+  // creates a new deck and refreshes the game variables
+  createDeck(cards, deckUl);
+  correctlyGuessedCards = 0;
+  clickCount = 0;
+  totalGuesses = 0;
+  guessCounter.textContent = totalGuesses;
+  card1 = null;
+  card2 = null;
+  TimeoutID;
+  restartTheStarRating(starsUl);
+  gameStartTime = setStartTime();
 }
 
 function displayCard(card) {
@@ -144,25 +184,13 @@ function checkMatch(card1, card2) {
   }
 };
 
-function updateStars(totalGuesses, starsUl) {
-  switch(totalGuesses) {
-    case 15:
-      starsUl.removeChild(starsUl.firstElementChild)
-      break;
-    case 19:
-      starsUl.removeChild(starsUl.firstElementChild)
-      break;
-    case 26:
-      starsUl.removeChild(starsUl.firstElementChild)
-      break;
-    case 30:
-      starsUl.removeChild(starsUl.firstElementChild)
-      break;
-    case 35:
-      starsUl.removeChild(starsUl.firstElementChild)
-      break;
+function checkEndGame() {
+  if (correctlyGuessedCards == 16) {
+    gameOver();
   }
 }
+
+/********************* POST-GAME-SCREEN RELATED FUNCTIONS *********************/
 
 function showGuessResult(guessResult, totalGuesses) {
   guessResult.textContent = totalGuesses;
@@ -201,35 +229,6 @@ function gameOver() {
   showTimeResult(timeResult, gameTime);
   gameOverDiv.style.display = "block";
 }
-
-function checkEndGame() {
-  if (correctlyGuessedCards == 16) {
-    gameOver();
-  }
-}
-
-function calculateGameTime() {
-  let totalGameTime = gameFinishTime - gameStartTime;
-  let minutes = Math.floor(totalGameTime / 60000);
-  let seconds = Math.floor((totalGameTime % 60000) / 1000);
-  return `${(minutes < 10) ? ("0" + minutes) : minutes}:${(seconds < 10) ? ("0" + seconds) : seconds}`
-}
-
-function displayTime(gameStartTime) {
-  let now = Date.now();
-  let passedTime = now - gameStartTime;
-  let minutes = Math.floor(passedTime / 60000);
-  let seconds = Math.floor((passedTime % 60000) / 1000);
-  passedTime = `${(minutes < 10) ? ("0" + minutes) : minutes}:${(seconds < 10) ? ("0" + seconds) : seconds}`;
-  timeCounter.textContent = passedTime;
-}
-
-// function setTimer() {
-//   let timer = setInterval(function(){
-//     displayTime(gameStartTime)
-//   }, 1000);
-//   return timer
-// }
 
 
 /******************************************************************************
