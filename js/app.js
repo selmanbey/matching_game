@@ -2,15 +2,17 @@
                          CONSTANTS AND VARIABLES
 *******************************************************************************/
 
-
+const startButton = document.querySelector(".start-button");
 const restartButton = document.querySelector(".restart");
 const deckUl = document.querySelector(".deck");
 const starsUl = document.querySelector(".stars")
 const guessCounter = document.querySelector(".guesses");
+const timeCounter = document.querySelector(".time");
 const gameOnDiv = document.querySelector(".gameon");
 const gameOverDiv = document.querySelector(".gameover");
 const guessResult = document.querySelector(".guess-result");
 const starResult = document.querySelector(".star-result");
+const timeResult = document.querySelector(".time-result");
 const replayButton = document.querySelector(".replay");
 
 let cards = ["fa-diamond", "fa-diamond", "fa-paper-plane-o", "fa-paper-plane-o",
@@ -24,6 +26,11 @@ let card1 = null; // to temporarily save the first clicked card in a guess
 let card2 = null; // to temporarily save the second clicked card in a guess
 let TimeoutID; /* to let the player see the cards for a bit while in incorrect
                   guesses, before they are turned down */
+let gameStartTime;
+let gameFinishTime;
+let gameTime; // to keep a timer for each game
+
+let screenTimer; // to display a timer in screen
 
 
 /******************************************************************************
@@ -44,6 +51,25 @@ function shuffle(array) {
     return array;
 }
 
+function setStartTime() {
+  gameStartTime = Date.now()
+  return gameStartTime
+}
+
+function stopStartTime() {
+  gameFinishTime = Date.now()
+  return gameFinishTime
+}
+
+function startTheGame(startButton) {
+  startButton.style.display = "none";
+  createDeck(cards, deckUl);
+  gameStartTime = setStartTime()
+  screenTimer = setInterval(function(){
+    displayTime(gameStartTime)
+  }, 1000);
+};
+
 function restartTheStarRating(starsUl) {
   starsUl.innerHTML = ""
   let starLi = `<li><i class="fa fa-star"></i></li>`
@@ -57,7 +83,7 @@ function restartTheGame(deckUl) {
   while(deckUl.firstChild) {
     deckUl.removeChild(deckUl.firstChild);
   };
-  // creates a new deck and the variables accordingly
+  // creates a new deck and refreshes the game variables
   createDeck(cards, deckUl);
   correctlyGuessedCards = 0;
   clickCount = 0;
@@ -66,7 +92,8 @@ function restartTheGame(deckUl) {
   card1 = null;
   card2 = null;
   TimeoutID;
-  restartTheStarRating(starsUl)
+  restartTheStarRating(starsUl);
+  gameStartTime = setStartTime();
 }
 
 function createACard(classname) {
@@ -141,7 +168,7 @@ function showGuessResult(guessResult, totalGuesses) {
   guessResult.textContent = totalGuesses;
 }
 
-function showStarResult(starsUl) {
+function showStarResult(starResult, starsUl) {
   starResult.innerHTML = starsUl.innerHTML;
   //To style the li elements properly
   let childNodes = starResult.childNodes
@@ -161,18 +188,48 @@ function showStarResult(starsUl) {
   };
 }
 
+function showTimeResult(timeResult, gameTime) {
+  timeResult.textContent = gameTime;
+}
+
 function gameOver() {
   gameOnDiv.style.display = "none";
+  gameFinishTime = stopStartTime();
+  gameTime = calculateGameTime();
   showGuessResult(guessResult, totalGuesses);
-  showStarResult(starsUl);
+  showStarResult(starResult, starsUl);
+  showTimeResult(timeResult, gameTime);
   gameOverDiv.style.display = "block";
 }
 
 function checkEndGame() {
   if (correctlyGuessedCards == 16) {
-    gameOver()
+    gameOver();
   }
 }
+
+function calculateGameTime() {
+  let totalGameTime = gameFinishTime - gameStartTime;
+  let minutes = Math.floor(totalGameTime / 60000);
+  let seconds = Math.floor((totalGameTime % 60000) / 1000);
+  return `${(minutes < 10) ? ("0" + minutes) : minutes}:${(seconds < 10) ? ("0" + seconds) : seconds}`
+}
+
+function displayTime(gameStartTime) {
+  let now = Date.now();
+  let passedTime = now - gameStartTime;
+  let minutes = Math.floor(passedTime / 60000);
+  let seconds = Math.floor((passedTime % 60000) / 1000);
+  passedTime = `${(minutes < 10) ? ("0" + minutes) : minutes}:${(seconds < 10) ? ("0" + seconds) : seconds}`;
+  timeCounter.textContent = passedTime;
+}
+
+// function setTimer() {
+//   let timer = setInterval(function(){
+//     displayTime(gameStartTime)
+//   }, 1000);
+//   return timer
+// }
 
 
 /******************************************************************************
@@ -186,9 +243,12 @@ restartButton.addEventListener("click", function() {
 
 deckUl.addEventListener("click", function(event) {
   if(event.target.classList.contains("deck")) {
-    /* this "if" is here to make sure that nothing happens when an empty
+    /* this is to make sure that nothing happens when an empty
     section of the deck (that is, the blanks between cards) is clicked
     */
+  } else if (event.target.classList.contains("start-button")) {
+    // this is only for the start button in the very beginning of the game
+    startTheGame(startButton);
   } else {
     clickCount += 1;
     if (clickCount == 1) { // if it's the first click in a guess
@@ -213,8 +273,9 @@ replayButton.addEventListener("click", function() {
   restartTheGame(deckUl);
 });
 
+
 /******************************************************************************
                             INITIAL SETTING
 *******************************************************************************/
 
-createDeck(cards, deckUl);
+// createDeck(cards, deckUl);

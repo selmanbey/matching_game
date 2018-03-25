@@ -23,15 +23,17 @@
         		<li><i class="fa fa-star"></i></li>
         		<li><i class="fa fa-star"></i></li>
         	</ul>
-
         	<span class="guesses">0</span> Guesses
-
+          <span class="tab"></span>
+          Time: <span class="time">00:00</span>
           <div class="restart">
         		<i class="fa fa-repeat"></i>
         	</div>
         </section>
 
-        <ul class="deck"></ul>
+        <ul class="deck">
+          <i class="fa fa-play start-button"></i>
+        </ul>
     </div>
 
     <div class="container gameover">
@@ -39,7 +41,7 @@
           <h1>CONGRATULATIONS!</h1>
         </header>
         <section class="result-panel">
-          <p>It took you <span class="guess-result"></span> guesses to win.</p>
+          <p>It took you <span class="time-result"></span> seconds and <span class="guess-result"></span> guesses to win.</p>
           <p>Which means you got <span class="star-result"></span>!</p>
           <p>Do you want to play again, maybe?</p>
           <i class="fa fa-repeat replay"></i>

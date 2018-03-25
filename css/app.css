@@ -72,6 +72,10 @@ h1 {
     cursor: pointer;
 }
 
+.tab {
+  display: inline-block;
+  width: 2em;
+}
 
 /* STYLES FOR THE DECK OF CARDS  */
 
@@ -86,6 +90,13 @@ h1 {
     justify-content: space-between;
     align-items: center;
     margin: 0 0 3em;
+}
+
+.start-button {
+  color: #F1EEE7;
+  font-size: 120px;
+  margin: auto;
+  animation: clicked 0.1s;
 }
 
 .deck .card {
@@ -104,11 +115,10 @@ h1 {
 .deck .card.open {
     background: #F1EEE7;
     cursor: default;
-    animation-name: makeitsmall;
-    animation-duration: 0.1s;
+    animation: clicked 0.1s;
 }
 
-@keyframes makeitsmall {
+@keyframes clicked {
   from {
     transform: scale(0.8);
   }
