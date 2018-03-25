@@ -52,6 +52,7 @@ function stopStartTime() {
 
 function calculateGameTime() {
   let totalGameTime = gameFinishTime - gameStartTime;
+  // got the idea and the approach from https://stackoverflow.com/questions/21294302 
   let minutes = Math.floor(totalGameTime / 60000);
   let seconds = Math.floor((totalGameTime % 60000) / 1000);
   return `${(minutes < 10) ? ("0" + minutes) : minutes}:${(seconds < 10) ? ("0" + seconds) : seconds}`
