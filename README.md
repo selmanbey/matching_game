@@ -12,7 +12,8 @@ the matching pairs in the least guesses possible.
 index.html - the main structure of the game board, the score panel and post-game screen
 
 #### 2. styling
-app.css - main stylesheet for the game \n
+app.css - main stylesheet for the game
+
 https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css - font awesome library
 
 #### 1. script
