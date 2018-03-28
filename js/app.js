@@ -41,16 +41,20 @@ let screenTimer; // to display a timer in screen
 /******************* SCORE-PANEL RELATED FUNCTIONS ****************************/
 
 function setStartTime() {
+  // sets a start time for each game
   gameStartTime = Date.now()
   return gameStartTime
 }
 
 function stopStartTime() {
+  // sets a stop time for each game
   gameFinishTime = Date.now()
   return gameFinishTime
 }
 
 function calculateGameTime() {
+  /* calculates how much it took for the player to finish the game, returns the
+  result as a string */
   let totalGameTime = gameFinishTime - gameStartTime;
   // got the idea and the approach from https://stackoverflow.com/questions/21294302
   let minutes = Math.floor(totalGameTime / 60000);
@@ -59,6 +63,7 @@ function calculateGameTime() {
 }
 
 function displayTime(gameStartTime) {
+  // displays time in the time counter throughout the game
   let now = Date.now();
   let passedTime = now - gameStartTime;
   let minutes = Math.floor(passedTime / 60000);
@@ -68,6 +73,7 @@ function displayTime(gameStartTime) {
 }
 
 function restartTheStarRating(starsUl) {
+  // restarts star rating each time a new game starts
   starsUl.innerHTML = ""
   let starLi = `<li><i class="fa fa-star"></i></li>`
   for(let i = 0; i < 5; i++) {
@@ -76,6 +82,7 @@ function restartTheStarRating(starsUl) {
 };
 
 function updateStars(totalGuesses, starsUl) {
+  // adjusts star rating according to guess count
   switch(totalGuesses) {
     case 15:
       starsUl.removeChild(starsUl.firstElementChild)
@@ -133,6 +140,7 @@ function createDeck(cards, deckUl) {
 }
 
 function startTheGame(startButton) {
+  // starts the game and sets a timer
   startButton.style.display = "none";
   createDeck(cards, deckUl);
   gameStartTime = setStartTime()
@@ -160,11 +168,14 @@ function restartTheGame(deckUl) {
 }
 
 function displayCard(card) {
+  // displays the content of the clicked card
   card.classList.toggle("show")
   card.classList.toggle("open")
 };
 
 function turnDownCards(card1, card2) {
+  /* when two cards are clicked and the guess is wrong, turns down again the
+  open cards */
   card1.classList.toggle("open");
   card1.classList.toggle("show");
   card2.classList.toggle("open");
@@ -172,14 +183,14 @@ function turnDownCards(card1, card2) {
 };
 
 function checkMatch(card1, card2) {
-  console.log("checkMatch function performed")
+  // checks if the first clicked card matches with the second clicked one
   if (card1.innerHTML == card2.innerHTML) {
     card1.classList.toggle("match");
-    card1.firstElementChild.classList.toggle("match"); // to ensure that <i>s will
-                                                    // behave the same as <li>s when
-                                                    // clicked
+    card1.firstElementChild.classList.toggle("match");
     card2.classList.toggle("match");
-    card2.firstElementChild.classList.toggle("match");
+    card2.firstElementChild.classList.toggle("match"); /* these are to ensure that
+                                              <i>s will behave the same as <li>s
+                                               when clicked */
     correctlyGuessedCards += 2;
     console.log("correctlyGuessedCards:", correctlyGuessedCards)
     clickCount = 0;
@@ -192,6 +203,7 @@ function checkMatch(card1, card2) {
 };
 
 function checkEndGame() {
+  // checks if all the cards are correctly guessed or not after each guess
   if (correctlyGuessedCards == 16) {
     gameOver();
   }
@@ -200,12 +212,14 @@ function checkEndGame() {
 /********************* POST-GAME-SCREEN RELATED FUNCTIONS *********************/
 
 function showGuessResult(guessResult, totalGuesses) {
+  // displays the number of results it took to finish the game
   guessResult.textContent = totalGuesses;
 }
 
 function showStarResult(starResult, starsUl) {
+  // displays how many stars the player got
   starResult.innerHTML = starsUl.innerHTML;
-  //To style the li elements properly
+  // To style the li elements properly
   let childNodes = starResult.childNodes
   for (child of childNodes) {
     if (child.nodeName == "LI") {
@@ -224,10 +238,12 @@ function showStarResult(starResult, starsUl) {
 }
 
 function showTimeResult(timeResult, gameTime) {
+  // displays how much time it took the player to finish the game
   timeResult.textContent = gameTime;
 }
 
 function gameOver() {
+  // switches from game-on screen to game-over screen
   gameOnDiv.style.display = "none";
   gameFinishTime = stopStartTime();
   gameTime = calculateGameTime();
@@ -238,6 +254,8 @@ function gameOver() {
 }
 
 function playEachClick(eventTarget) {
+  /* runs all the possible scenarios when a card is clicked and performs
+  relevant action */
   if(eventTarget.classList.contains("deck")) {
     /* this is to ensure  nothing happens when an empty
     section of the deck (that is, the blanks between cards) is clicked
@@ -250,7 +268,7 @@ function playEachClick(eventTarget) {
       // this is to ensure nothing happens when an already matched card is clicked
       clickCount += 1;
       if (clickCount == 1) { // if it's the first click in a guess
-        displayCard(eventTarget); //displays the clicked card
+        displayCard(eventTarget);
         card1 = eventTarget; // remembers the first card
       } else if (clickCount == 2) { // if it's the second click in a guess
         card2 = eventTarget; // registers the second card
