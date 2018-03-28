@@ -52,7 +52,7 @@ function stopStartTime() {
 
 function calculateGameTime() {
   let totalGameTime = gameFinishTime - gameStartTime;
-  // got the idea and the approach from https://stackoverflow.com/questions/21294302 
+  // got the idea and the approach from https://stackoverflow.com/questions/21294302
   let minutes = Math.floor(totalGameTime / 60000);
   let seconds = Math.floor((totalGameTime % 60000) / 1000);
   return `${(minutes < 10) ? ("0" + minutes) : minutes}:${(seconds < 10) ? ("0" + seconds) : seconds}`
@@ -172,10 +172,16 @@ function turnDownCards(card1, card2) {
 };
 
 function checkMatch(card1, card2) {
+  console.log("checkMatch function performed")
   if (card1.innerHTML == card2.innerHTML) {
     card1.classList.toggle("match");
+    card1.firstElementChild.classList.toggle("match"); // to ensure that <i>s will
+                                                    // behave the same as <li>s when
+                                                    // clicked
     card2.classList.toggle("match");
+    card2.firstElementChild.classList.toggle("match");
     correctlyGuessedCards += 2;
+    console.log("correctlyGuessedCards:", correctlyGuessedCards)
     clickCount = 0;
   } else {
     TimeoutID = window.setTimeout(function() {
@@ -231,6 +237,35 @@ function gameOver() {
   gameOverDiv.style.display = "block";
 }
 
+function playEachClick(eventTarget) {
+  if(eventTarget.classList.contains("deck")) {
+    /* this is to ensure  nothing happens when an empty
+    section of the deck (that is, the blanks between cards) is clicked
+    */
+  } else if (eventTarget.classList.contains("start-button")) {
+    // this is only for the start button in the very beginning of the game
+    startTheGame(startButton);
+  } else {
+    if (eventTarget.classList.contains("match") == false) {
+      // this is to ensure nothing happens when an already matched card is clicked
+      clickCount += 1;
+      if (clickCount == 1) { // if it's the first click in a guess
+        displayCard(eventTarget); //displays the clicked card
+        card1 = eventTarget; // remembers the first card
+      } else if (clickCount == 2) { // if it's the second click in a guess
+        displayCard(eventTarget); // displays the second card
+        card2 = eventTarget; // registers the second card
+        totalGuesses += 1 // updates the number of guesses
+        checkMatch(card1, card2);   /* checks if the first clicked card matches
+                                       with the second clicked card */
+        guessCounter.textContent = totalGuesses; // updates the page accordingly
+        updateStars(totalGuesses, starsUl)   // updates the star rating
+        checkEndGame(); // checks if all the cards are correctly guessed or not
+      };
+    };
+  };
+};
+
 
 /******************************************************************************
                          EVENT LISTENERS
@@ -242,29 +277,8 @@ restartButton.addEventListener("click", function() {
 });
 
 deckUl.addEventListener("click", function(event) {
-  if(event.target.classList.contains("deck")) {
-    /* this is to make sure that nothing happens when an empty
-    section of the deck (that is, the blanks between cards) is clicked
-    */
-  } else if (event.target.classList.contains("start-button")) {
-    // this is only for the start button in the very beginning of the game
-    startTheGame(startButton);
-  } else {
-    clickCount += 1;
-    if (clickCount == 1) { // if it's the first click in a guess
-      displayCard(event.target); //displays the clicked card
-      card1 = event.target; // remembers the first card
-    } else if (clickCount == 2) { // if it's the second click in a guess
-      displayCard(event.target); // displays the second card
-      card2 = event.target; // registers the second card
-      checkMatch(card1, card2);   /* checks if the first clicked card matches
-                                  with the second clicked card */
-      totalGuesses += 1 // updates the number of guesses
-      guessCounter.textContent = totalGuesses; // updates the page accordingly
-      updateStars(totalGuesses, starsUl)   // updates the star rating
-      checkEndGame(); // checks if all the cards are correctly guessed or not
-    };
-  };
+  eventTarget = event.target;
+  playEachClick(eventTarget);
 });
 
 replayButton.addEventListener("click", function() {
