@@ -253,14 +253,24 @@ function playEachClick(eventTarget) {
         displayCard(eventTarget); //displays the clicked card
         card1 = eventTarget; // remembers the first card
       } else if (clickCount == 2) { // if it's the second click in a guess
-        displayCard(eventTarget); // displays the second card
         card2 = eventTarget; // registers the second card
-        totalGuesses += 1 // updates the number of guesses
-        checkMatch(card1, card2);   /* checks if the first clicked card matches
-                                       with the second clicked card */
-        guessCounter.textContent = totalGuesses; // updates the page accordingly
-        updateStars(totalGuesses, starsUl)   // updates the star rating
-        checkEndGame(); // checks if all the cards are correctly guessed or not
+        if (card1 == card2 ||
+            card1 == card2.firstElementChild ||
+            card2 == card1.firstElementChild ||
+            card1 == card2.parentElement ||
+            card2 == card1.parentElement /* all these shenanigans because of <i>s and <li>s
+                                            are both clickable */
+            ) {
+          clickCount -= 1; // if you click on the same card ignores the click
+        } else {
+          displayCard(eventTarget); // displays the second card
+          totalGuesses += 1 // updates the number of guesses
+          checkMatch(card1, card2);   /* checks if the first clicked card matches
+                                         with the second clicked card */
+          guessCounter.textContent = totalGuesses; // updates the page accordingly
+          updateStars(totalGuesses, starsUl)   // updates the star rating
+          checkEndGame(); // checks if all the cards are correctly guessed or not
+        };
       };
     };
   };
